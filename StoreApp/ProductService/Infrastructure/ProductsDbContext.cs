@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Common.Models.Product;
+﻿using Common.Models.Product;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace ProductService.Infrastructure
 {
@@ -16,5 +17,16 @@ namespace ProductService.Infrastructure
         }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+    }
+
+    public class ProductsDbContextFactory : IDesignTimeDbContextFactory<ProductsDbContext>
+    {
+        public ProductsDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ProductsDbContext>();
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=c;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+
+            return new ProductsDbContext(optionsBuilder.Options);
+        }
     }
 }

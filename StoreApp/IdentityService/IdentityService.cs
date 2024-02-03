@@ -1,25 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Fabric;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Data;
 using IdentityService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using AutoMapper;
 using IdentityService.Interfaces;
 using IdentityService.Services;
 using System.Fabric.Query;
 using IdentityService.Mapping;
+using StatelessService = Microsoft.ServiceFabric.Services.Runtime.StatelessService;
 
 namespace IdentityService
 {
