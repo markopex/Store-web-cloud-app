@@ -11,24 +11,20 @@ using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Data;
-using IdentityService.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using AutoMapper;
-using IdentityService.Interfaces;
-using IdentityService.Services;
+using ProductService.Interfaces;
 using System.Fabric.Query;
-using IdentityService.Mapping;
+using ProductService.Mapping;
+using ProductService.Services;
 
-namespace IdentityService
+namespace ProductService
 {
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
-    internal sealed class IdentityService : StatelessService
+    internal sealed class ProductService : StatelessService
     {
-        public IdentityService(StatelessServiceContext context)
+        public ProductService(StatelessServiceContext context)
             : base(context)
         { }
 
@@ -47,24 +43,20 @@ namespace IdentityService
 
                         var builder = WebApplication.CreateBuilder();
 
-                        
                         builder.Services.AddSingleton<StatelessServiceContext>(serviceContext);
                         builder.WebHost
                                     .UseKestrel()
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-
-                        builder.Services.AddDbContext<IdentityDbContext>(options =>       
-                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
+                        
                         // Add services to the container.
                         
                         builder.Services.AddControllers();
                         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                         builder.Services.AddEndpointsApiExplorer();
                         builder.Services.AddSwaggerGen();
+
                         var mapperConfig = new MapperConfiguration(mc =>
                         {
                             mc.AddProfile(new MappingProfile());
@@ -72,7 +64,8 @@ namespace IdentityService
 
                         IMapper mapper = mapperConfig.CreateMapper();
                         builder.Services.AddSingleton(mapper);
-                        builder.Services.AddScoped<IUserService, UserService>();
+                        builder.Services.AddScoped<IProductsService, ProductsService>();
+                        builder.Services.AddScoped<ICategoryService, CategoryService>();
 
                         var app = builder.Build();
                         
