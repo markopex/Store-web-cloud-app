@@ -1,10 +1,15 @@
-﻿using ProductService.Dto;
+﻿using Common.Models;
+using Microsoft.ServiceFabric.Services.Remoting;
+using System.ServiceModel;
 
-namespace ProductService.Interfaces
+namespace Common.Services
 {
-    public interface ICategoryService
+    [ServiceContract]
+    public interface ICategoryService : IService
     {
-        CategoryDto GetCategory(string id);
-        List<CategoryDto> GetCategories();
+        [OperationContract]
+        Task<Category> GetCategory(string id);
+        [OperationContract]
+        Task<List<Category>> GetCategories();
     }
 }
