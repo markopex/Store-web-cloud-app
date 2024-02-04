@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Common.Models.Identity;
+using Azure;
+using Azure.Data.Tables;
 using IdentityService.Dto;
-using IdentityService.Infrastructure;
 using IdentityService.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -14,57 +13,103 @@ namespace IdentityService.Services
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IdentityDbContext _dbContext;
+        private readonly TableClient _tableClient;
 
         private readonly IConfigurationSection _secretKey;
         private readonly IConfigurationSection _imagePath;
 
-        public UserService(IConfiguration config, IMapper mapper, IdentityDbContext dbContext)
+        public UserService(IConfiguration config, IMapper mapper)
         {
             _secretKey = config.GetSection("SecretKey");
             _imagePath = config.GetSection("StoredFilesPath");
             _mapper = mapper;
-            _dbContext = dbContext;
+            string connectionString = "UseDevelopmentStorage=true;"; // For Azure Storage Emulator
+            string tableName = "Users";
+            _tableClient = new TableClient(connectionString, tableName);
+            _tableClient.CreateIfNotExists();
+
         }
         public UserDto AddUser(RegisterDto registerDto)
         {
-            User user = _dbContext.Users.ToList().Find(match: x =>
+            // Query for the user by username (as PartitionKey) or email (as RowKey)
+            string filterByUsername = TableClient.CreateQueryFilter($"PartitionKey eq {registerDto.Username.ToLower()}");
+            string filterByEmail = TableClient.CreateQueryFilter($"RowKey eq {registerDto.Email}");
+            Pageable<TableEntity> users = _tableClient.Query<TableEntity>(filter: $"{filterByUsername} or {filterByEmail}");
+
+            if (users.Any())
             {
-                return x.Username.ToLower() == registerDto.Username.ToLower() || x.Email == registerDto.Email;
-            });
-            if (user != null) throw new Exception("User with same username-email already exists.");
+                throw new Exception("User with same username-email already exists.");
+            }
 
-            user = _mapper.Map<User>(registerDto);
-            user.Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-            user.Username = user.Username;
+            // Create a new user entity
+            var userEntity = new TableEntity(registerDto.Username.ToLower(), registerDto.Email)
+            {
+                { "Password", BCrypt.Net.BCrypt.HashPassword(registerDto.Password) },
+                { "FirstName", registerDto.FirstName },
+                { "LastName", registerDto.LastName },
+                { "Birthday", registerDto.Birthday.ToString() }, // Storing as string for simplicity
+                { "Address", registerDto.Address },
+            };
 
-            _dbContext.Add(user);
-            _dbContext.SaveChanges();
+            _tableClient.AddEntity(userEntity);
 
-            var retVal = _mapper.Map<UserDto>(_dbContext.Users.ToList().Find(x => x.Username.ToLower() == registerDto.Username.ToLower()));
+            // For simplicity, mapping directly back to UserDto from registerDto. Adjust mapping as necessary.
+            var retVal = _mapper.Map<UserDto>(userEntity);
 
             return retVal;
         }
 
+
         public UserDto GetUserByEmail(string email)
         {
-            return _mapper.Map<UserDto>(_dbContext.Users.Find(email));
+            // Assuming email is used as RowKey
+            var userEntity = _tableClient.Query<TableEntity>(filter: $"RowKey eq '{email}'").FirstOrDefault();
+
+            if (userEntity == null)
+            {
+                return null;
+            }
+
+            // Use AutoMapper to map the TableEntity to UserDto
+            var userDto = _mapper.Map<UserDto>(userEntity);
+
+            return userDto;
         }
 
         public UserDto GetUserByUsername(string username)
         {
-            return _mapper.Map<UserDto>(_dbContext.Users.ToList().Find(i => i.Username.ToLower() == username.ToLower()));
+            // Assuming username is used as PartitionKey
+            var userEntity = _tableClient.Query<TableEntity>(filter: $"PartitionKey eq '{username.ToLower()}'").FirstOrDefault();
+
+            if (userEntity == null)
+            {
+                return null;
+            }
+
+            // Use AutoMapper to map the TableEntity to UserDto
+            return _mapper.Map<UserDto>(userEntity);
         }
+
 
         public SuccessLoginDto LoginUser(LoginDto loginDto)
         {
-            User user = _dbContext.Users.ToList().Find(x => x.Username == loginDto.Username);
+            // Query for the user by username. Assuming username is used as the PartitionKey.
+            Pageable<TableEntity> users = _tableClient.Query<TableEntity>(
+                filter: $"PartitionKey eq '{loginDto.Username.ToLower()}'");
 
-            if (user == null)
-                return null;
-
-            if (BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
+            var userEntity = users.FirstOrDefault();
+            if (userEntity == null)
             {
+                return null; // User not found
+            }
+
+            // Assuming password is stored in the "Password" column
+            var hashedPassword = userEntity["Password"].ToString();
+            if (BCrypt.Net.BCrypt.Verify(loginDto.Password, hashedPassword))
+            {
+                // Map the TableEntity to your User or UserDto object. Simplified here for brevity.
+                var user = _mapper.Map<UserDto>(userEntity);
+
                 return new SuccessLoginDto()
                 {
                     Token = GenerateToken(user)
@@ -72,11 +117,12 @@ namespace IdentityService.Services
             }
             else
             {
-                return null;
+                return null; // Password verification failed
             }
         }
 
-        private string GenerateToken(User user)
+
+        private string GenerateToken(UserDto user)
         {
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
@@ -86,7 +132,7 @@ namespace IdentityService.Services
             SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var tokeOptions = new JwtSecurityToken(
-                //issuer: "http://localhost:5001", //url servera koji je izdao token
+                issuer: "http://localhost:5001", //url servera koji je izdao token
                 claims: claims, //claimovi
                 expires: DateTime.Now.AddMinutes(60), //vazenje tokena u minutama
                 signingCredentials: signinCredentials //kredencijali za potpis
@@ -97,12 +143,24 @@ namespace IdentityService.Services
 
         public UserDto UpdateUser(string email, UpdateUserDto dto)
         {
-            var user = _dbContext.Users.Find(email);
-            if (user == null)
+            // Assuming email is used as RowKey
+            var userEntity = _tableClient.Query<TableEntity>(filter: $"RowKey eq '{email}'").FirstOrDefault();
+            if (userEntity == null)
+            {
                 throw new Exception("User not found");
-            _mapper.Map<UpdateUserDto, User>(dto, user);
-            _dbContext.SaveChanges();
-            return _mapper.Map<UserDto>(user);
+            }
+
+            // Update properties
+            userEntity["FirstName"] = dto.FirstName;
+            userEntity["LastName"] = dto.LastName;
+            userEntity["Birthday"] = dto.Birthday.ToString();
+            userEntity["Address"] = dto.Address;
+
+            _tableClient.UpdateEntity(userEntity, ETag.All, TableUpdateMode.Replace);
+
+            // Assuming UserDto and TableEntity structure alignment for AutoMapper
+            return _mapper.Map<UserDto>(userEntity);
         }
+
     }
 }

@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.Fabric;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Data;
-using IdentityService.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using IdentityService.Interfaces;
+using IdentityService.Services;
+using AutoMapper;
+using IdentityService.Mapping;
+using StatelessService = Microsoft.ServiceFabric.Services.Runtime.StatelessService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using System.Fabric.Query;
 
 namespace IdentityService
 {
@@ -49,9 +45,22 @@ namespace IdentityService
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-
-                        builder.Services.AddDbContext<IdentityDbContext>(options =>       
-                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                        builder.Services.AddAuthentication(opt => {
+                            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        })
+                       .AddJwtBearer(options =>
+                       {
+                           options.TokenValidationParameters = new TokenValidationParameters //Podesavamo parametre za validaciju pristiglih tokena
+                           {
+                               ValidateIssuer = false, //Validira izdavaoca tokena
+                               ValidateAudience = false, //Kazemo da ne validira primaoce tokena
+                               ValidateLifetime = true,//Validira trajanje tokena
+                               ValidateIssuerSigningKey = true, //validira potpis token, ovo je jako vazno!
+                               //ValidIssuer = "http://localhost:5001", //odredjujemo koji server je validni izdavalac
+                               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
+                           };
+                       });
 
 
                         // Add services to the container.
@@ -59,7 +68,41 @@ namespace IdentityService
                         builder.Services.AddControllers();
                         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                         builder.Services.AddEndpointsApiExplorer();
-                        builder.Services.AddSwaggerGen();
+                        builder.Services.AddSwaggerGen(c =>
+                        {
+                            c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityApi", Version = "v1" });
+                            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                            {
+                                In = ParameterLocation.Header,
+                                Description = "Please enter token",
+                                Name = "Authorization",
+                                Type = SecuritySchemeType.Http,
+                                BearerFormat = "JWT",
+                                Scheme = "bearer"
+                            });
+                            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                            {
+                                {
+                                    new OpenApiSecurityScheme
+                                    {
+                                        Reference = new OpenApiReference
+                                        {
+                                            Type=ReferenceType.SecurityScheme,
+                                            Id="Bearer"
+                                        }
+                                    },
+                                    new string[]{}
+                                }
+                            });
+                        });
+                        var mapperConfig = new MapperConfiguration(mc =>
+                        {
+                            mc.AddProfile(new MappingProfile());
+                        });
+
+                        IMapper mapper = mapperConfig.CreateMapper();
+                        builder.Services.AddSingleton(mapper);
+                        builder.Services.AddScoped<IUserService, UserService>();
                         
                         var app = builder.Build();
                         
@@ -69,9 +112,10 @@ namespace IdentityService
                         app.UseSwagger();
                         app.UseSwaggerUI();
                         }
-                        
+
+
+                        app.UseAuthentication();
                         app.UseAuthorization();
-                        
                         app.MapControllers();
                         
                         

@@ -1,11 +1,5 @@
-using IdentityService.Infrastructure;
-using Microsoft.Extensions.Configuration;
 using Microsoft.ServiceFabric.Services.Runtime;
-using System;
 using System.Diagnostics;
-using System.Fabric.Query;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace IdentityService
 {
