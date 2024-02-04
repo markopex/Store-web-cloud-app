@@ -11,6 +11,10 @@ using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Data;
+using IdentityService.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace IdentityService
 {
@@ -38,13 +42,18 @@ namespace IdentityService
 
                         var builder = WebApplication.CreateBuilder();
 
+                        
                         builder.Services.AddSingleton<StatelessServiceContext>(serviceContext);
                         builder.WebHost
                                     .UseKestrel()
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-                        
+
+                        builder.Services.AddDbContext<IdentityDbContext>(options =>       
+                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
                         // Add services to the container.
                         
                         builder.Services.AddControllers();
