@@ -1,13 +1,18 @@
 using System.Fabric;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
 using AutoMapper;
 using ProductService.Interfaces;
-using System.Fabric.Query;
 using ProductService.Mapping;
 using ProductService.Services;
 using StatelessService = Microsoft.ServiceFabric.Services.Runtime.StatelessService;
+using System.Globalization;
+using Microsoft.ServiceFabric.Services.Communication.Wcf;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
+using Common.Services;
+using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Runtime;
+using Microsoft.EntityFrameworkCore;
+using ProductService.Infrastructure;
 
 namespace ProductService
 {
@@ -43,7 +48,9 @@ namespace ProductService
                                     .UseUrls(url);
                         
                         // Add services to the container.
-                        
+                        builder.Services.AddDbContext<ProductsDbContext>(options =>
+                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
                         builder.Services.AddControllers();
                         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                         builder.Services.AddEndpointsApiExplorer();
@@ -75,8 +82,30 @@ namespace ProductService
                         
                         return app;
 
-                    }))
+                    })),
+                new ServiceInstanceListener((c) =>
+                 {
+                     var factory = new ProductsDbContextFactory();
+                     string[] args = { };
+                     return new FabricTransportServiceRemotingListener(c, new ProductValidationService(factory.CreateDbContext(args)));
+                 })     
             };
         }
+
+        //private ICommunicationListener CreateWcfCommunicationListener(StatelessServiceContext context)
+        //{
+        //    string host = context.NodeContext.IPAddressOrFQDN;
+        //    var endpointConfig = context.CodePackageActivationContext.GetEndpoint("WcfServiceEndpoint");
+        //    int port = endpointConfig.Port;
+        //    var scheme = endpointConfig.Protocol.ToString();
+        //    string uri = string.Format(CultureInfo.InvariantCulture, "net.{0}://{1}:{2}/ServiceEndpoint", scheme, host, port);
+
+        //    return new WcfCommunicationListener<IProductValidationService>(
+        //        serviceContext: context,
+        //        wcfServiceType: this,
+        //        listenerBinding: WcfUtility.CreateTcpClientBinding(),
+        //        address: new System.ServiceModel.EndpointAddress(uri)
+        //        );
+        //}
     }
 }
