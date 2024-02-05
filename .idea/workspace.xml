@@ -5,6 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="879669ae-5c82-4010-b2d1-104e3ca0d553" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/Mapper/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/Mapper/MappingProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Basket/Basket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Basket/Basket.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Product/Product.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Product/Product.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Models/ProductEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Models/ProductEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp.sln" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationPackageRoot/ApplicationManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationPackageRoot/ApplicationManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.1Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.1Node.xml" afterDir="false" />
@@ -13,6 +23,7 @@
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.1Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.1Node.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.5Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.5Node.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServices.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServices.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +37,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -34,16 +46,16 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "cidr.known.project.marker": "true",
-    "last_opened_file_path": "C:/Users/Marko/Documents/GitHub/Store-web-cloud-app",
-    "settings.editor.selected.configurable": "AndroidSdkUpdater"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Marko/Documents/GitHub/Store-web-cloud-app&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -74,7 +86,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="identity" />
+                        <option value="product-stateless" />
                       </list>
                     </value>
                   </entry>

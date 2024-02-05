@@ -8,7 +8,7 @@ namespace Common.Services
     public interface IProductValidationService: IService
     {
         [OperationContract]
-        Task<bool> AreProductsValid(List<int> productIds);
+        Task<bool> CheckIsBasketValid(Basket basket);
 
         [OperationContract]
         Task<List<Product>> GetProductsByIds(List<int> productIds);

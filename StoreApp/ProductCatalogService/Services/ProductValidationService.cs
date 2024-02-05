@@ -19,16 +19,19 @@ namespace ProductCatalogService.Services
             _tableClient.CreateIfNotExists();
         }
 
-        public async Task<bool> AreProductsValid(List<int> productIds)
+        public async Task<bool> CheckIsBasketValid(Basket basket)
         {
+            var productIds = basket.BasketItems.Select(x => x.ProductId).ToList();
             var validProductIds = new List<int>();
 
             // Assuming RowKey is used as the product ID
-            foreach (var productId in productIds)
+            foreach (var product in basket.BasketItems)
             {
+                var productId = product.ProductId;
                 var response = _tableClient.QueryAsync<ProductEntity>(filter => filter.RowKey == productId.ToString());
                 await foreach (var entity in response)
                 {
+                    if (entity.Quantity < product.Quantity)
                     validProductIds.Add(int.Parse(entity.RowKey));
                 }
             }
@@ -55,7 +58,8 @@ namespace ProductCatalogService.Services
                         Price = entity.Price,
                         Description = entity.Description,
                         CategoryId = entity.CategoryId,
-                        ImageUrl = entity.ImageUrl
+                        ImageUrl = entity.ImageUrl,
+                        Quantity = entity.Quantity,
                     };
                     products.Add(productDto);
                 }

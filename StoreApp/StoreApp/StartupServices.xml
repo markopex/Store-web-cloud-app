@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StartupServicesManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="ApiGateway_InstanceCount" DefaultValue="-1" />
     <Parameter Name="BasketService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="BasketService_PartitionCount" DefaultValue="1" />
     <Parameter Name="BasketService_TargetReplicaSetSize" DefaultValue="3" />
@@ -13,6 +14,11 @@
          ServiceFabric PowerShell module.
 
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
+    <Service Name="ApiGateway" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="ApiGatewayType" InstanceCount="[ApiGateway_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
     <Service Name="BasketService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="BasketServiceType" TargetReplicaSetSize="[BasketService_TargetReplicaSetSize]" MinReplicaSetSize="[BasketService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[BasketService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />

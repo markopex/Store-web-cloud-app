@@ -8,6 +8,8 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using System.Fabric;
 using Common.Services;
+using Microsoft.ServiceFabric.Services.Client;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
 
 namespace BasketService
 {
@@ -16,6 +18,7 @@ namespace BasketService
     /// </summary>
     internal sealed class BasketService : StatefulService, IBasketsService
     {
+        private readonly string productValidatorServicePath = @"fabric:/StoreApp/BasketService";
         private readonly IMapper _mapper = (new MapperConfiguration(mc =>
         {
             mc.AddProfile(new MappingProfile());
@@ -23,6 +26,14 @@ namespace BasketService
         public BasketService(StatefulServiceContext context)
             : base(context)
         { }
+
+        private IProductValidationService? _productValidationService
+        {
+            get
+            {
+                return ServiceProxy.Create<IProductValidationService>(new Uri(productValidatorServicePath));
+            }
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
@@ -48,7 +59,10 @@ namespace BasketService
                 }
                 else
                 {
-                    return null;
+                    return new Basket()
+                    {
+                        BasketItems = new List<BasketItem>()
+                    };
                 }
             }
         }
@@ -68,6 +82,11 @@ namespace BasketService
                 else
                 {
                     basketItem.Quantity += item.Quantity;
+                }
+                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basket);
+                if (!isBasketValid)
+                {
+                    throw new InvalidOperationException();
                 }
                 await baskets.SetAsync(tx, customerId, basket);
 

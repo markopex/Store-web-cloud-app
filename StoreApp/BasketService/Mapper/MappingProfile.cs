@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BasketService.Dto;
-using Common.Models.Basket;
+using Common.Dto;
+using Common.Models;
 
 namespace BasketService.Mapping
 {
