@@ -1,0 +1,17 @@
+.order-details-product{
+    display: flex;
+    flex-direction: row;
+}
+
+.order-details-product-image{
+    width: 10em;
+    height: 10em;
+}
+
+.order-details-product-title{
+    padding-left: 2em;
+}
+
+.order-details-product-desc {
+    color: gray;
+}

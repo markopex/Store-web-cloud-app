@@ -1,0 +1,43 @@
+<h1 class="title">Products</h1>
+<p-toast></p-toast>
+<p-dialog header="Add product" [(visible)]="displayModal" [modal]="true" [style]="{width: '50vw'}" [draggable]="false"
+    [resizable]="false" *ngIf="role == 'SELLER'">
+    <div>
+        <form [formGroup]="addForm" class="center-div" style="flex-direction:column;">
+            <span class="p-float-label input-field-margin">
+                <input id="float-input" type="text" pInputText formControlName="name">
+                <label for="float-input">Name</label>
+            </span>
+            <span class="p-float-label input-field-margin">
+                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="description"></textarea>
+                <label for="float-input">Summary</label>
+            </span>
+            <span class="p-float-label input-field-margin">
+                <input id="float-input" type="number" pInputText formControlName="price">
+                <label for="float-input">Price</label>
+            </span>
+            <span class="p-float-label input-field-margin">
+                <input id="float-input" type="number" pInputText formControlName="quantity">
+                <label for="float-input">Quantity</label>
+            </span>
+
+            <p-fileUpload mode="basic" chooseLabel="Choose" name="demo[]" accept="image/*"
+                (onSelect)="onSelectImage($event)"></p-fileUpload>
+        </form>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-plus" *ngIf="!isEditing" (click)="addProduct()" label="Add" [loading]="isAdding"
+            styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-save" *ngIf="isEditing" (click)="updateProduct()" label="Save changes"
+            [loading]="isAdding" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-times" (click)="displayModal=false" label="Cancel"
+            styleClass="p-button-danger p-button-text"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-button label="Add product" (click)="showAddDialog()" icon="pi pi-plus" styleClass="p-button-lg"
+    *ngIf="role == 'SELLER'"></p-button>
+<div class="product-list">
+    <app-product *ngFor="let product of products" [prod]="product" style="margin: 2em;"
+        (onProductDeleted)="onProductDeleted($event)" (onProductUpdate)="onProductEdit($event)"></app-product>
+</div>

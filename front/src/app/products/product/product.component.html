@@ -1,0 +1,18 @@
+<p-toast></p-toast>
+<p-card class="product">
+    <div class="edit-delete-layout" *ngIf="role == 'SELLER'">
+        <p-button (click)="editProduct()" icon="pi pi-pencil"></p-button>
+        <p-button (click)="deleteProduct()" icon="pi pi-trash"></p-button>
+    </div>
+    <br />
+    <img src={{imageUrl}} />
+    <h2 class="text-center">{{product.name}}</h2>
+    <p style="width: 200;">{{product.description}}</p>
+    <div class="product-price-div" *ngIf="role == 'USER'">
+        <h3>{{product?.price}} RSD</h3>
+        <button pButton pRipple type="button" icon="pi pi-shopping-cart" (click)="addToBasket()"
+            class="p-button-rounded"></button>
+    </div>
+    <p style="width: 200;">Quantity: {{product.quantity}}</p>
+    <h3 class="text-center" *ngIf="role != 'USER'">{{product?.price}} RSD</h3>
+</p-card>

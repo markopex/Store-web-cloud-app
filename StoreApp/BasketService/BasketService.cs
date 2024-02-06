@@ -102,6 +102,11 @@ namespace BasketService
             using (var tx = StateManager.CreateTransaction())
             {
                 var basket = _mapper.Map<Basket>(dto);
+                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basket);
+                if (!isBasketValid)
+                {
+                    throw new InvalidOperationException();
+                }
                 await baskets.SetAsync(tx, customerId, basket);
 
                 await tx.CommitAsync();

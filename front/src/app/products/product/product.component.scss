@@ -1,0 +1,31 @@
+.product {
+    margin: 2em;
+}
+
+.product-price-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+:host ::ng-deep #product-image {
+    border-radius: 25px;
+    width: 200;
+}
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.edit-delete-layout {
+    display: flex;
+    padding-bottom: 8;
+    justify-content: space-between;
+    width: 36;
+}

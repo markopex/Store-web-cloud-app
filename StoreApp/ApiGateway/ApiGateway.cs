@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 namespace ApiGateway
 {
@@ -46,10 +48,30 @@ namespace ApiGateway
                         builder.WebHost
                                     .UseKestrel()
                                     .UseContentRoot(Directory.GetCurrentDirectory())
+                                     .ConfigureAppConfiguration((hostingContext, config) =>
+                                    {
+                                        config
+                                            .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+                                            .AddJsonFile("appsettings.json", true, true)
+                                            .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+                                            .AddJsonFile("ocelot.json", false, false)
+                                            .AddEnvironmentVariables();
+                                    })
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-                        
-                        // Add services to the container.
+
+                        var ocelotBuilder = new ConfigurationBuilder();
+                        ocelotBuilder
+                                .SetBasePath(Directory.GetCurrentDirectory())
+                               //add configuration.json  
+                               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                               .AddEnvironmentVariables();
+
+                        var ocelotConfiguration = ocelotBuilder.Build();
+
+                        builder.Services.AddOcelot();
+
+
                         builder.Services.AddAuthentication(opt => {
                             opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                             opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,12 +127,14 @@ namespace ApiGateway
                         app.UseSwagger();
                         app.UseSwaggerUI();
                         }
+                        app.UseHttpsRedirection();
 
                         app.UseAuthentication();
                         app.UseAuthorization();
                         app.MapControllers();
-                        
-                        
+                        app.UseOcelot().Wait();
+
+
                         return app;
 
                     }))

@@ -1,0 +1,16 @@
+<p-toast></p-toast>
+<p-card class="center-div margin-4em" header="Login" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
+    <form [formGroup]="loginForm" class="center-div" style="flex-direction:column;">
+        <span class="p-float-label">
+            <input id="float-input" type="text" pInputText formControlName="username">
+            <label for="float-input">Username</label>
+        </span>
+        <span class="p-float-label">
+            <input id="float-input" type="password" pInputText formControlName="password">
+            <label for="float-input">Password</label>
+        </span>
+        <div>
+            <button pButton type="button" label="Login" [loading]="isLoading" (click)="login()"></button>
+        </div>
+    </form>
+</p-card>

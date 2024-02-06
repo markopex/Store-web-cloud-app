@@ -4,26 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="879669ae-5c82-4010-b2d1-104e3ca0d553" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="879669ae-5c82-4010-b2d1-104e3ca0d553" name="Changes" comment="- Product and category services added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/Mapper/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/Mapper/MappingProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Basket/Basket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Basket/Basket.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Product/Product.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Product/Product.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Models/ProductEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Models/ProductEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/IdentityService/PackageRoot/ServiceManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/IdentityService/PackageRoot/ServiceManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Mapper/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Mapper/MappingProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/PackageRoot/ServiceManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/PackageRoot/ServiceManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp.sln" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationPackageRoot/ApplicationManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationPackageRoot/ApplicationManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.1Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.1Node.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.5Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/ApplicationParameters/Local.5Node.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Cloud.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Cloud.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.1Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.1Node.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.5Node.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServiceParameters/Local.5Node.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServices.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StartupServices.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

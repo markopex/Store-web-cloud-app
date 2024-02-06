@@ -1,0 +1,11 @@
+<h2>Orders</h2>
+<div class="card">
+    <p-tabView>
+        <p-tabPanel header="Active order">
+            <app-order-list [filter]="'active'"></app-order-list>
+        </p-tabPanel>
+        <p-tabPanel header="Previous orders">
+            <app-order-list [filter]="'history'"></app-order-list>
+        </p-tabPanel>
+    </p-tabView>
+</div>

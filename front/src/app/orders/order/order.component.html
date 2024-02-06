@@ -1,0 +1,44 @@
+<div class="order-card">
+    <div class="order-details-header">
+        <div class="order-detail">
+            <p class="order-datail-title">Order Number:</p>
+            <p>{{order?.id}}</p>
+        </div>
+        <hr />
+        <div class="order-detail">
+            <p class="order-datail-title">Order address:</p>
+            <p>{{order?.address}}</p>
+        </div>
+        <hr />
+        <div class="order-detail" *ngIf="orderedDate != null">
+            <p class="order-datail-title">Order Date:</p>
+            <p>{{orderedDate | date : "MMM d, y, h:mm:ss"}}</p>
+        </div>
+        <hr />
+        <div class="order-detail" *ngIf="secondsUntil == 0">
+            <p class="order-datail-title">Order delivered:</p>
+            <p>{{deliveredDate | date : "MMM d, y, h:mm:ss"}}</p>
+        </div>
+        <hr />
+        <div class="order-detail">
+            <p class="order-datail-title">Total amount:</p>
+            <p>{{order?.price}}</p>
+        </div>
+    </div>
+    <h5 *ngIf="secondsUntil == 0" style="text-align: center; background: green; color: white; padding: 0.5em;">Order is
+        delivered</h5>
+    <h5 *ngIf="secondsUntil > 0"
+        style="text-align: center; background: rgb(255, 183, 0); color: white; padding: 0.5em;">Order is delivering.
+        Seconds until delivery {{secondsUntil}}
+    </h5>
+    <div>
+        <p *ngIf="order.comment != ''">Comment: {{order.comment}}</p>
+    </div>
+    <div class="order-details-product-list" *ngFor="let orderItem of order.orderDetails">
+        <app-order-detail-product [orderItem]="orderItem"></app-order-detail-product>
+    </div>
+    <div style="display: flex; flex-direction: row-reverse;" *ngIf="role == 'USER'">
+        <button pButton pRipple type="button" label="Cancel order" [loading]="isTaking" class="p-button-rounded"
+            (click)="cancelOrder()"></button>
+    </div>
+</div>

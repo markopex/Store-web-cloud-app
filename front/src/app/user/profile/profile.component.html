@@ -1,0 +1,79 @@
+<p-toast></p-toast>
+<div style="display: flex; justify-content: center; padding: 4em; padding-bottom: 1em;">
+    <p-card header="Profile informations" subheader="" [style]="{width: '700px', margin: '1em'}"
+        styleClass="p-card-shadow">
+        <form [formGroup]="editUserForm">
+            <span class="p-float-label">
+                <input id="float-input" type="text" pInputText [disabled]="true" [value]="user?.username"
+                    [style]="{width: '100%'}">
+                <label for="float-input">Username</label>
+            </span>
+            <span class="p-float-label">
+                <input id="float-input" type="email" pInputText [disabled]="true" [value]="user?.email"
+                    [style]="{width: '100%'}">
+                <label for="float-input">Email</label>
+            </span>
+            <span class="p-float-label">
+                <p-calendar formControlName="birthdayDate" [style]="{width: '100%'}"
+                    [disabled]="!isEditing"></p-calendar>
+                <label for="float-input">Birthday</label>
+            </span>
+            <span class="p-float-label">
+                <input id="float-input" type="text" pInputText formControlName="firstName" [style]="{width: '100%'}"
+                    required>
+                <label for="float-input">First Name</label>
+            </span>
+            <span class="p-float-label">
+                <input id="float-input" type="text" pInputText formControlName="lastName" [style]="{width: '100%'}"
+                    required>
+                <label for="float-input">Last Name</label>
+            </span>
+            <span class="p-float-label">
+                <input id="float-input" type="text" pInputText formControlName="address" [style]="{width: '100%'}"
+                    required>
+                <label for="float-input">Address</label>
+            </span>
+            <button *ngIf="!isEditing" pButton type="button" label="Edit" [loading]="isSavingEdit"
+                (click)="edit()"></button>
+            <span class="p-buttonset" *ngIf="isEditing">
+                <button pButton pRipple label="Save" icon="pi pi-check" (click)="saveChanges()"></button>
+                <button pButton pRipple label="Cancel" icon="pi pi-times" (click)="cancelEdit()"></button>
+            </span>
+        </form>
+    </p-card>
+    <div>
+        <p-card header="" subheader="Profile image" [style]="{width: '360px', margin: '1em'}"
+            styleClass="p-card-shadow">
+            <ng-template pTemplate="header">
+                <img alt="Card" [src]="profileImg">
+            </ng-template>
+            <div>
+                <p-fileUpload mode="basic" name="demo[]" accept="image/*" [multiple]="false" [maxFileSize]="10000000"
+                    (onBeforeUpload)="onUpload($event)" (onSelect)="onSelectImage($event)"></p-fileUpload>
+            </div>
+        </p-card>
+        <div style="display: flex; justify-content: center; padding-top: 1em;">
+            <p-card header="Role" subheader="Your current role is: {{role | titlecase}}" [style]="{width: '360px'}"
+                styleClass="p-card-shadow">
+                <div *ngIf="role == 'USER'">
+                    <div *ngIf="user.sellerStatus == 0">
+                        <p>Apply for becoming seller</p>
+                        <button pButton type="button" label="Apply" [loading]="isLoading" (click)="apply()"></button>
+                    </div>
+                    <div>
+                        <div *ngIf="user.sellerStatus == 1">
+                            <p>You apply for seller is processing</p>
+                        </div>
+                        <div *ngIf="user.sellerStatus == 2">
+                            <p>You apply for seller is approved</p>
+                        </div>
+                        <div *ngIf="user.sellerStatus == 3">
+                            <p>You apply for seller is denied</p>
+                        </div>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+
+    </div>
+</div>

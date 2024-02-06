@@ -1,0 +1,12 @@
+<div style="display: flex; margin: 2em">
+    <div class="order-details-product">
+        <img class="order-details-product-image" src="{{imageUrl}}" />
+    </div>
+    <div class="order-details-product-title">
+        <p>{{currentOrderItem.productName}}</p>
+        <p class="order-details-product-desc">Price: {{currentOrderItem.productPrice}}</p>
+        <p class="order-details-product-desc">Quantity: {{currentOrderItem.quantity}}</p>
+        <p class="order-details-product-desc">Total Price: {{currentOrderItem.quantity * currentOrderItem.productPrice}}
+        </p>
+    </div>
+</div>

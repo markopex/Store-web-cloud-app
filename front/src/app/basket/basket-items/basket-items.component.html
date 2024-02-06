@@ -1,0 +1,29 @@
+<p-toast></p-toast>
+<table class="table table-borderless">
+    <thead>
+        <tr>
+          <th scope="col">Product Details</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Price</th>
+          <th scope="col">Total</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of basket?.basketItems">
+          <th scope="row">
+            <app-basket-item-product [productId]="item.productId"></app-basket-item-product>
+          </th>
+          <td>
+            <p-inputNumber [(ngModel)]="item.quantity" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="100" (onInput)="updateTotal()">
+            </p-inputNumber>
+          </td>
+          <td>{{item.product?.price}}</td>
+          <td>{{item.product?.price * item.quantity}}</td>
+          <td>
+            <button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger p-button-outlined" (click)="removeItem(item)"></button>
+          </td>
+        </tr>
+      </tbody>
+</table>
+<button pButton type="button" label="Update basket" [loading]="isUpdating" (click)="update()"></button>

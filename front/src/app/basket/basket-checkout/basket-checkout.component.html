@@ -1,0 +1,19 @@
+<p-toast></p-toast>
+<div>
+    <h2>Summary</h2>
+    <div style="margin: 0em;">
+        <form  [formGroup]="checkoutForm" style="flex-direction:column;">
+            <span class="p-float-label input-field-margin" style="margin-top: 2em;">
+                <input id="float-input" type="text" pInputText formControlName="address"> 
+                <label for="float-input">Address</label>
+            </span>
+            <span class="p-float-label input-field-margin" style="margin-top: 2em;">
+                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="comment"></textarea>
+                <label for="float-input">Comment</label>
+            </span>
+        </form>
+    </div>
+    <h3>Total: {{total}}</h3>
+
+    <button pButton type="button" label="Checkout" [loading]="isSending" (click)="checkout()"></button>
+</div>

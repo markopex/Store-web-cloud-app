@@ -31,13 +31,11 @@ namespace ProductCatalogService.Services
                 var response = _tableClient.QueryAsync<ProductEntity>(filter => filter.RowKey == productId.ToString());
                 await foreach (var entity in response)
                 {
-                    if (entity.Quantity < product.Quantity)
+                    if (entity.Quantity < product.Quantity) return false;
                     validProductIds.Add(int.Parse(entity.RowKey));
                 }
             }
-
-            // Compare lists to ensure all input IDs were valid
-            return validProductIds.Count == productIds.Count && !productIds.Except(validProductIds).Any();
+            return true;
         }
 
         public async Task<List<Product>> GetProductsByIds(List<int> productIds)
