@@ -2,7 +2,7 @@
     <div>
         <button [routerLink]="'/orders'" pButton pRipple type="button" label="Orders"
             class="p-button-outlined p-button-info"></button>
-        <button *ngIf="role == 'USER'" [routerLink]="'/card'" pButton pRipple type="button" icon="pi pi-shopping-cart"
+        <button [routerLink]="'/card'" pButton pRipple type="button" icon="pi pi-shopping-cart"
             class="p-button-rounded p-button-info p-button-outlined"></button>
         <button [routerLink]="'/profile'" pButton pRipple type="button" icon="pi pi-user"
             class="p-button-rounded p-button-info p-button-outlined"></button>

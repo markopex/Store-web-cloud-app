@@ -17,17 +17,77 @@ using ProductCatalogService.Interfaces;
 using ProductCatalogService.Services;
 using ProductCatalogService.Mapping;
 using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Runtime;
+using Common.Services;
+using Common.Dto;
+using Common.Models;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using Azure.Data.Tables;
+using ProductCatalogService.Models;
 
 namespace ProductCatalogService
 {
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance.
     /// </summary>
-    internal sealed class ProductCatalogService : StatelessService
+    internal sealed class ProductCatalogService : StatelessService, IProductValidationService
     {
+        private readonly TableClient _tableClient;
+
         public ProductCatalogService(StatelessServiceContext context)
             : base(context)
-        { }
+        {
+            string connectionString = "UseDevelopmentStorage=true;"; // For Azure Storage Emulator
+            string tableName = "Products";
+            _tableClient = new TableClient(connectionString, tableName);
+            _tableClient.CreateIfNotExists();
+        }
+
+        public async Task<bool> CheckIsBasketValid(BasketDto basket)
+        {
+            var productIds = basket.BasketItems.Select(x => x.ProductId).ToList();
+            var validProductIds = new List<int>();
+
+            // Assuming RowKey is used as the product ID
+            foreach (var product in basket.BasketItems)
+            {
+                var productId = product.ProductId;
+                var response = _tableClient.QueryAsync<ProductEntity>(filter => filter.RowKey == productId.ToString());
+                await foreach (var entity in response)
+                {
+                    if (entity.Quantity < product.Quantity) return false;
+                    validProductIds.Add(int.Parse(entity.RowKey));
+                }
+            }
+            return true;
+        }
+
+        public async Task<List<Product>> GetProductsByIds(List<int> productIds)
+        {
+            var products = new List<Product>();
+
+            // Fetch each product by ID
+            foreach (var productId in productIds)
+            {
+                var response = _tableClient.QueryAsync<ProductEntity>(filter => filter.RowKey == productId.ToString());
+                await foreach (var entity in response)
+                {
+                    // Assuming you have configured AutoMapper or a similar mapping tool
+                    var productDto = new Product // This should be mapped from entity to DTO
+                    {
+                        Id = int.Parse(entity.RowKey),
+                        Name = entity.Name,
+                        Price = entity.Price,
+                        Description = entity.Description,
+                        CategoryId = entity.CategoryId,
+                        ImageUrl = entity.ImageUrl,
+                        Quantity = entity.Quantity,
+                    };
+                    products.Add(productDto);
+                }
+            }
+
+            return products;
+        }
 
         /// <summary>
         /// Optional override to create listeners (like tcp, http) for this service instance.
@@ -35,7 +95,7 @@ namespace ProductCatalogService
         /// <returns>The collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[]
+            return this.CreateServiceRemotingInstanceListeners().Concat(new ServiceInstanceListener[]
             {
                 new ServiceInstanceListener(serviceContext =>
                     new KestrelCommunicationListener(serviceContext, "ServiceEndpoint", (url, listener) =>
@@ -92,7 +152,7 @@ namespace ProductCatalogService
                         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                         builder.Services.AddEndpointsApiExplorer();
                         builder.Services.AddSwaggerGen();
-                        
+
                         var app = builder.Build();
                         
                         // Configure the HTTP request pipeline.
@@ -101,18 +161,18 @@ namespace ProductCatalogService
                         app.UseSwagger();
                         app.UseSwaggerUI();
                         }
-                        
+
                         app.UseAuthorization();
-                        
+
                         app.MapControllers();
-                        
-                        
+
+
                         return app;
 
                     })),
-                new ServiceInstanceListener(context =>
-                    new FabricTransportServiceRemotingListener(context, new ProductValidationService()), "RemotingListener")
-            };
+                //new ServiceInstanceListener(context =>
+                //    new FabricTransportServiceRemotingListener(context, this), "RemotingListener")
+            });
         }
     }
 }

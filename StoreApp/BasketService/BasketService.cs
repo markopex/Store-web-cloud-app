@@ -18,7 +18,7 @@ namespace BasketService
     /// </summary>
     internal sealed class BasketService : StatefulService, IBasketsService
     {
-        private readonly string productValidatorServicePath = @"fabric:/StoreApp/BasketService";
+        private readonly string productValidatorServicePath = @"fabric:/StoreApp/ProductCatalogService";
         private readonly IMapper _mapper = (new MapperConfiguration(mc =>
         {
             mc.AddProfile(new MappingProfile());
@@ -73,7 +73,10 @@ namespace BasketService
             var item = _mapper.Map<BasketItem>(dto);
             using (var tx = StateManager.CreateTransaction())
             {
-                var basket = await baskets.GetOrAddAsync(tx, customerId, new Basket());
+                var basket = await baskets.GetOrAddAsync(tx, customerId, new Basket()
+                {
+                    BasketItems = new List<BasketItem> { }
+                });
                 var basketItem = basket.BasketItems.Find(i => i.ProductId == item.ProductId);
                 if (basketItem == null)
                 {
@@ -83,7 +86,8 @@ namespace BasketService
                 {
                     basketItem.Quantity += item.Quantity;
                 }
-                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basket);
+                var basketDto = _mapper.Map<BasketDto>(basket);
+                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basketDto);
                 if (!isBasketValid)
                 {
                     throw new InvalidOperationException();
@@ -102,7 +106,8 @@ namespace BasketService
             using (var tx = StateManager.CreateTransaction())
             {
                 var basket = _mapper.Map<Basket>(dto);
-                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basket);
+                var basketDto = _mapper.Map<BasketDto>(basket);
+                bool isBasketValid = await _productValidationService.CheckIsBasketValid(basketDto);
                 if (!isBasketValid)
                 {
                     throw new InvalidOperationException();

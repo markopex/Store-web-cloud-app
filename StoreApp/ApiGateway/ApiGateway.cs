@@ -25,6 +25,7 @@ namespace ApiGateway
     /// </summary>
     internal sealed class ApiGateway : StatelessService
     {
+        private readonly string _cors = "cors";
         public ApiGateway(StatelessServiceContext context)
             : base(context)
         { }
@@ -54,22 +55,22 @@ namespace ApiGateway
                                             .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                                             .AddJsonFile("appsettings.json", true, true)
                                             .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                                            .AddJsonFile("ocelot.json", false, false)
+                                            //.AddJsonFile("ocelot.json", false, false)
                                             .AddEnvironmentVariables();
                                     })
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
 
-                        var ocelotBuilder = new ConfigurationBuilder();
-                        ocelotBuilder
-                                .SetBasePath(Directory.GetCurrentDirectory())
-                               //add configuration.json  
-                               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                               .AddEnvironmentVariables();
+                        //var ocelotBuilder = new ConfigurationBuilder();
+                        //ocelotBuilder
+                        //        .SetBasePath(Directory.GetCurrentDirectory())
+                        //       //add configuration.json  
+                        //       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                        //       .AddEnvironmentVariables();
 
-                        var ocelotConfiguration = ocelotBuilder.Build();
+                        //var ocelotConfiguration = ocelotBuilder.Build();
 
-                        builder.Services.AddOcelot();
+                        //builder.Services.AddOcelot();
 
 
                         builder.Services.AddAuthentication(opt => {
@@ -119,6 +120,16 @@ namespace ApiGateway
                             });
                         });
 
+                        builder.Services.AddCors(options =>
+                        {
+                            options.AddPolicy(name: _cors, builder => {
+                                builder.WithOrigins("http://localhost:4200")//Ovde navodimo koje sve aplikacije smeju kontaktirati nasu,u ovom slucaju nas Angular front
+                                       .AllowAnyHeader()
+                                       .AllowAnyMethod()
+                                       .AllowCredentials();
+                            });
+                        });
+
                         var app = builder.Build();
                         
                         // Configure the HTTP request pipeline.
@@ -130,9 +141,10 @@ namespace ApiGateway
                         app.UseHttpsRedirection();
 
                         app.UseAuthentication();
+                        app.UseCors(_cors);
                         app.UseAuthorization();
                         app.MapControllers();
-                        app.UseOcelot().Wait();
+                        //app.UseOcelot().Wait();
 
 
                         return app;

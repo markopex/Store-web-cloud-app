@@ -1,4 +1,5 @@
 ﻿using Azure.Data.Tables;
+using Common.Dto;
 using Common.Models;
 using Common.Services;
 using ProductCatalogService.Dto;
@@ -19,7 +20,7 @@ namespace ProductCatalogService.Services
             _tableClient.CreateIfNotExists();
         }
 
-        public async Task<bool> CheckIsBasketValid(Basket basket)
+        public async Task<bool> CheckIsBasketValid(BasketDto basket)
         {
             var productIds = basket.BasketItems.Select(x => x.ProductId).ToList();
             var validProductIds = new List<int>();

@@ -8,7 +8,7 @@
     <img src={{imageUrl}} />
     <h2 class="text-center">{{product.name}}</h2>
     <p style="width: 200;">{{product.description}}</p>
-    <div class="product-price-div" *ngIf="role == 'USER'">
+    <div class="product-price-div" *ngIf="isLoggedIn">
         <h3>{{product?.price}} RSD</h3>
         <button pButton pRipple type="button" icon="pi pi-shopping-cart" (click)="addToBasket()"
             class="p-button-rounded"></button>

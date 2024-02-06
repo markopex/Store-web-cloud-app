@@ -6,6 +6,7 @@ import { BasketService } from 'src/app/basket/shared/basket.service';
 import { Product } from '../shared/product.model';
 import { environment } from 'src/environments/environment';
 import { ProductService } from '../shared/product.service';
+import { AuthService } from 'src/app/Shared/services/auth.service';
 
 @Component({
   selector: 'app-product',
@@ -15,7 +16,6 @@ import { ProductService } from '../shared/product.service';
 })
 export class ProductComponent implements OnInit {
 
-
   @Input() set prod(product: Product) {
     this.product = product;
     this.imageUrl = environment.serverUrl + '/product/' + product.id + "/image";
@@ -24,13 +24,15 @@ export class ProductComponent implements OnInit {
   @Output() onProductDeleted: EventEmitter<number> = new EventEmitter();
   @Output() onProductUpdate: EventEmitter<Product> = new EventEmitter();
 
+  isLoggedIn = this.authService.authStateObservable.value;
+
   product: Product;
   imageUrl: String;
   displayModal: boolean = false;
 
   role = roleGetter();
 
-  constructor(private basketService: BasketService, private messageService: MessageService, private productService: ProductService) {
+  constructor(private basketService: BasketService, private messageService: MessageService, private productService: ProductService, private authService: AuthService) {
 
   }
 
@@ -46,6 +48,7 @@ export class ProductComponent implements OnInit {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product added to basket:)' });
       },
       error => {
+        console.log(error);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message });
       }
     )

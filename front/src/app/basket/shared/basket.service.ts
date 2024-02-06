@@ -11,23 +11,24 @@ import { Checkout } from './checkout.model';
 })
 export class BasketService {
 
-  constructor( private http: HttpClient) { }
+  serverUrl: string = "http://localhost:8080/api";//environment.serverUrl;
+  constructor(private http: HttpClient) { }
 
   public totalObservable = new BehaviorSubject<number>(0);
 
-  setBasket(basket: Basket) :Observable<Object> {
-    return this.http.post<Object>(environment.serverUrl + '/basket', basket);
+  setBasket(basket: Basket): Observable<Object> {
+    return this.http.post<Object>(this.serverUrl + '/basket', basket);
   }
 
-  getBasket(): Observable<Basket>{
-    return this.http.get<Basket>(environment.serverUrl+ '/basket');
+  getBasket(): Observable<Basket> {
+    return this.http.get<Basket>(this.serverUrl + '/basket');
   }
 
-  checkout(checkout: Object): Observable<Object>{
-    return this.http.post<Object>(environment.serverUrl + '/basket/checkout', checkout);
+  checkout(checkout: Object): Observable<Object> {
+    return this.http.post<Object>(this.serverUrl + '/basket/checkout', checkout);
   }
 
-  addToBasket(item: BasketItem) :Observable<Object> {
-    return this.http.put<Object>(environment.serverUrl + '/basket', item);
+  addToBasket(item: BasketItem): Observable<Object> {
+    return this.http.put<Object>(this.serverUrl + '/basket', item);
   }
 }
