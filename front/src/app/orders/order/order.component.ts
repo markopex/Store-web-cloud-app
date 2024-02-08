@@ -70,7 +70,16 @@ export class OrderComponent implements OnInit {
   }
 
   cancelOrder() {
-    // Implement logic to cancel the order...
+    this.orderService.cancelOrder(new CancelOrderDto(this.paypalOrderId)).subscribe(
+      data => {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Order successfully canceled' });
+        window.location.reload();
+      },
+      (error) => {
+        // show error
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message });
+      }
+    )
   }
 
   payOrder() {
@@ -83,7 +92,6 @@ export class OrderComponent implements OnInit {
     console.log("usao " + this.order.paypalOrderId);
     // Assuming this.order.paypalOrderId is accessible in this context
     if (this.order.paypalOrderId) {
-      console.log("nasao");
       resolve(this.order.paypalOrderId);
     } else {
       reject(new Error('PayPal order ID not found'));
@@ -117,7 +125,7 @@ export class OrderComponent implements OnInit {
             window.location.reload();
           },
           (error) => {
-            // show error
+            // show error 
             this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message });
           }
         )

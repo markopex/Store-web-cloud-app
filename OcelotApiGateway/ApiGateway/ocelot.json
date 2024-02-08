@@ -230,7 +230,7 @@
         },
         {
             "DownstreamPathTemplate": "/api/order/capture",
-            "DownstreamScheme": "http",
+             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
