@@ -20,8 +20,8 @@ export class AuthService {
   }
 
   logoutUser() {
-    localStorage.removeItem('role');
-    // localStorage.removeItem('token');
+    // localStorage.removeItem('role');
+    localStorage.removeItem('token');
     // this.roleStateObservable.next(null);
     this.authStateObservable.next(false);
   }

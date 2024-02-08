@@ -35,8 +35,7 @@
     </ng-template>
 </p-dialog>
 
-<p-button label="Add product" (click)="showAddDialog()" icon="pi pi-plus" styleClass="p-button-lg"
-    *ngIf="role == 'SELLER'"></p-button>
+<!-- <p-button label="Add product" (click)="showAddDialog()" icon="pi pi-plus" styleClass="p-button-lg"></p-button> -->
 <div class="product-list">
     <app-product *ngFor="let product of products" [prod]="product" style="margin: 2em;"
         (onProductDeleted)="onProductDeleted($event)" (onProductUpdate)="onProductEdit($event)"></app-product>

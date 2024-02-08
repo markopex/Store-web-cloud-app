@@ -1,28 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Fabric;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
-using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Data;
 using AutoMapper;
-using Microsoft.OpenApi.Models;
-using ProductCatalogService.Interfaces;
-using ProductCatalogService.Services;
-using ProductCatalogService.Mapping;
-using Microsoft.ServiceFabric.Services.Remoting.V2.FabricTransport.Runtime;
-using Common.Services;
+using Azure;
+using Azure.Data.Tables;
 using Common.Dto;
 using Common.Models;
+using Common.Services;
+using Microsoft.OpenApi.Models;
+using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
-using Azure.Data.Tables;
+using Microsoft.ServiceFabric.Services.Runtime;
+using ProductCatalogService.Interfaces;
+using ProductCatalogService.Mapping;
 using ProductCatalogService.Models;
+using ProductCatalogService.Services;
+using System.Fabric;
 
 namespace ProductCatalogService
 {
@@ -32,7 +23,6 @@ namespace ProductCatalogService
     internal sealed class ProductCatalogService : StatelessService, IProductValidationService
     {
         private readonly TableClient _tableClient;
-
         public ProductCatalogService(StatelessServiceContext context)
             : base(context)
         {
@@ -89,6 +79,76 @@ namespace ProductCatalogService
             return products;
         }
 
+        public async Task<List<OrderDetail>> ReserveProducts(List<CreateOrderDetailDto> orderDetailDtos)
+        {
+            var partitionKey = "0";
+
+            var batch = new List<TableTransactionAction>();
+            var orderDetails = new List<OrderDetail>();
+
+            foreach (var detail in orderDetailDtos)
+            {
+                try
+                {
+                    // Attempt to retrieve the entity
+                    var productEntity = await _tableClient.GetEntityAsync<ProductEntity>(partitionKey, detail.ProductId.ToString());
+
+                    if (productEntity.Value == null)
+                    {
+                        throw new Exception($"Product with ID {detail.ProductId} does not exist.");
+                    }
+                    if (productEntity.Value.Quantity < detail.Quantity)
+                    {
+                        throw new Exception($"Product with ID {detail.ProductId} quantity insufficient.");
+                    }
+                    // Assuming you have a Quantity property to update
+                    // For example, let's say we are decrementing stock quantity
+                    productEntity.Value.Quantity -= detail.Quantity;
+                    var entity = productEntity.Value;
+                    var orderDetail = new OrderDetail // This should be mapped from entity to DTO
+                    {
+                        ProductId = int.Parse(entity.RowKey),
+                        ProductName = entity.Name,
+                        ProductPrice = entity.Price,
+                        Quantity = detail.Quantity,
+                    };
+                    orderDetails.Add(orderDetail);
+
+                    // Assuming you handle quantity updates within your ProductEntity logic
+                    var updateAction = new TableTransactionAction(TableTransactionActionType.UpdateReplace, productEntity.Value);
+                    batch.Add(updateAction);
+                }
+                catch (RequestFailedException ex) when (ex.Status == 404)
+                {
+                    // Product not found
+                    return new List<OrderDetail>();
+                }
+
+                // Submit the batch in chunks of 100 actions or less (Azure Table Storage limitation)
+                if (batch.Count == 100)
+                {
+                    await _tableClient.SubmitTransactionAsync(batch);
+                    batch.Clear();
+                }
+            }
+
+            // Submit any remaining actions
+            if (batch.Count > 0)
+            {
+                await _tableClient.SubmitTransactionAsync(batch);
+            }
+
+            return orderDetails;
+        }
+        public async Task<List<OrderDetail>> CancelReservationOnProducts(List<OrderDetail> orderDetailDtos)
+        {
+            return await ReserveProducts(orderDetailDtos.Select(i => new CreateOrderDetailDto()
+            {
+                ProductId = i.ProductId,
+                Quantity = -i.Quantity
+            }).ToList());
+        }
+
         /// <summary>
         /// Optional override to create listeners (like tcp, http) for this service instance.
         /// </summary>
@@ -114,7 +174,7 @@ namespace ProductCatalogService
                         // Add services to the container.
                         builder.Services.AddSwaggerGen(c =>
                         {
-                            c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityApi", Version = "v1" });
+                            c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductApi", Version = "v1" });
                             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                             {
                                 In = ParameterLocation.Header,
@@ -158,8 +218,8 @@ namespace ProductCatalogService
                         // Configure the HTTP request pipeline.
                         if (app.Environment.IsDevelopment())
                         {
-                        app.UseSwagger();
-                        app.UseSwaggerUI();
+                            app.UseSwagger();
+                            app.UseSwaggerUI();
                         }
 
                         app.UseAuthorization();
@@ -174,5 +234,7 @@ namespace ProductCatalogService
                 //    new FabricTransportServiceRemotingListener(context, this), "RemotingListener")
             });
         }
+
+        
     }
 }

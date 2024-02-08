@@ -15,21 +15,20 @@
             <p>{{orderedDate | date : "MMM d, y, h:mm:ss"}}</p>
         </div>
         <hr />
-        <div class="order-detail" *ngIf="secondsUntil == 0">
-            <p class="order-datail-title">Order delivered:</p>
-            <p>{{deliveredDate | date : "MMM d, y, h:mm:ss"}}</p>
-        </div>
-        <hr />
         <div class="order-detail">
             <p class="order-datail-title">Total amount:</p>
-            <p>{{order?.price}}</p>
+            <p>{{order?.price}} USD</p>
         </div>
     </div>
-    <h5 *ngIf="secondsUntil == 0" style="text-align: center; background: green; color: white; padding: 0.5em;">Order is
-        delivered</h5>
-    <h5 *ngIf="secondsUntil > 0"
-        style="text-align: center; background: rgb(255, 183, 0); color: white; padding: 0.5em;">Order is delivering.
-        Seconds until delivery {{secondsUntil}}
+    <h5 *ngIf="order.status == 1" style="text-align: center; background: green; color: white; padding: 0.5em;">Order
+        payment method: {{paymentMethod}}</h5>
+    <div *ngIf="order.status == 0">
+        <h5 style="text-align: center; background: rgb(255, 183, 0); color: white; padding: 0.5em;">Order not payed
+        </h5>
+    </div>
+    <h5 *ngIf="order.status == 3"
+        style="text-align: center; background: rgb(159, 159, 159); color: rgb(0, 0, 0); padding: 0.5em;">
+        Order cancelled
     </h5>
     <div>
         <p *ngIf="order.comment != ''">Comment: {{order.comment}}</p>
@@ -37,8 +36,10 @@
     <div class="order-details-product-list" *ngFor="let orderItem of order.orderDetails">
         <app-order-detail-product [orderItem]="orderItem"></app-order-detail-product>
     </div>
-    <div style="display: flex; flex-direction: row-reverse;" *ngIf="role == 'USER'">
-        <button pButton pRipple type="button" label="Cancel order" [loading]="isTaking" class="p-button-rounded"
+    <div *ngIf="order.status == 0">
+        <button pButton type="button" label="Cancel Order" icon="pi pi-times" class="p-button-danger"
             (click)="cancelOrder()"></button>
+        <button pButton type="button" label="Pay Order" icon="pi pi-check" class="p-button-success"
+            (click)="payOrder()"></button>
     </div>
 </div>

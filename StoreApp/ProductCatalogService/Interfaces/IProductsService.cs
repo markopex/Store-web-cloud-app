@@ -7,6 +7,7 @@ namespace ProductCatalogService.Interfaces
     {
         Product GetProduct(int id);
         Task<Product> AddProduct(CreateUpdateProductDto productDto);
-        List<Product> GetProducts(); 
+        List<Product> GetProducts();
+        Task<Stream> GetProductImageAsync(string productName);
     }
 }

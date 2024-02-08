@@ -1,9 +1,10 @@
-﻿namespace Common.Models.Order
+﻿namespace Common.Models
 {
     public enum EOrderStatus
     {
         PENDING,
         SUCCESS, 
-        FAILURE
+        FAILURE,
+        CANCELLED,
     }
 }

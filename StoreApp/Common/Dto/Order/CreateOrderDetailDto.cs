@@ -1,8 +1,8 @@
-﻿namespace OrderService.Dto
+﻿namespace Common.Dto
 {
     public class CreateOrderDetailDto
     {
         public int ProductId { get; set; }
-        public uint Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

@@ -45,6 +45,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { environment } from 'src/environments/environment';
 import { JwtModule } from "@auth0/angular-jwt";
+import { NgxPayPalModule } from 'ngx-paypal';
 
 export function roleGetter() {
   return localStorage.getItem('role');
@@ -101,6 +102,7 @@ export function tokenGetter() {
     FileUploadModule,
     TabViewModule,
     ProgressSpinnerModule,
+    NgxPayPalModule,
     JwtModule.forRoot(
       {
         config: {

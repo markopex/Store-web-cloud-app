@@ -5,15 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="879669ae-5c82-4010-b2d1-104e3ca0d553" name="Changes" comment="- Product and category services added">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/ApiGateway.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ApiGateway/Controllers/BasketController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ApiGateway/Controllers/BasketController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/IdentityService/PackageRoot/ServiceManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/IdentityService/PackageRoot/ServiceManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Mapper/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Mapper/MappingProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/PackageRoot/ServiceManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/PackageRoot/ServiceManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/BasketService/BasketService.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Dto/Basket/CheckoutDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Dto/Basket/CheckoutDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Order/EOrderStatus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Order/EOrderStatus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Order/Order.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Order/Order.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Models/Order/OrderDetails.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Models/Order/OrderDetails.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Services/IBasketsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Services/IBasketsService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/Common/Services/IProductValidationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/Common/Services/IProductValidationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/OrderService/Dto/CreateOrderDetailDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/OrderService/Dto/CreateOrderDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/OrderService/Interfaces/IOrderService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/OrderService/OrderService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/OrderService/OrderService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/OrderService/OrderService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/OrderService/OrderService.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Controllers/ProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Controllers/ProductController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Interfaces/IProductsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Interfaces/IProductsService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/ProductCatalogService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/ProductCatalogService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/ProductCatalogService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/ProductCatalogService.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductValidationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/ProductCatalogService/Services/ProductsService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" beforeDir="false" afterPath="$PROJECT_DIR$/StoreApp/StoreApp/StoreApp.sfproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/Shared/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/Shared/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/basket/basket-checkout/basket-checkout.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/basket/basket-checkout/basket-checkout.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/basket/basket-checkout/basket-checkout.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/basket/basket-checkout/basket-checkout.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/basket/shared/basket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/basket/shared/basket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/basket/shared/checkout.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/basket/shared/checkout.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/core/interceptor/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/core/interceptor/auth.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/order-list/order-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/order-list/order-list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/order/order.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/order/order.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/order/order.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/order/order.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/orders/orders.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/orders/orders.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/shared/order.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/shared/order.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/orders/shared/orders.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/orders/shared/orders.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/products/product-list/product-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/products/product-list/product-list.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/app/products/product/product.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/app/products/product/product.component.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

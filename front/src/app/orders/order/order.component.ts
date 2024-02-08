@@ -18,7 +18,7 @@ import { OrdersService } from '../shared/orders.service';
 export class OrderComponent implements OnInit {
 
   subscription: Subscription;
-
+  resolve = false
 
   startTimer(duration: number) {
     const source = timer(0, 1000);
@@ -40,18 +40,13 @@ export class OrderComponent implements OnInit {
 
   @Input() set ord(order: Order) {
     this.order = order;
-    let currentTime = new Date().getTime();
     this.orderedDate = new Date(order.utcTimeOrderCreated);
-    if (order.utcTimeDeliveryExpected != 0)
-      this.deliveredDate = new Date(order.utcTimeDeliveryExpected);
-
-    if (this.order.utcTimeDeliveryExpected > currentTime) {
-      this.secondsUntil = Math.floor((this.order.utcTimeDeliveryExpected - currentTime) / 1000);
-      this.startTimer(this.secondsUntil);
+    if (order.paymentMethod == 0) {
+      this.paymentMethod = "Cash on delivery";
+    } else if (order.paymentMethod == 1) {
+      this.paymentMethod = "PayPal";
     } else {
-      if (this.order.utcTimeDeliveryExpected != 0) {
-        this.secondsUntil = 0;
-      }
+      this.paymentMethod = "Unknown";
     }
   }
   deliveredDate?: Date;
@@ -60,6 +55,7 @@ export class OrderComponent implements OnInit {
   order: Order;
   isTaking = false;
   secondsUntil = -1;
+  paymentMethod: string;
 
   constructor(private eventService: EventService, private ordersService: OrdersService, private messageService: MessageService, private router: Router, private authService: AuthService) {
     //this.countdown.begin();
@@ -69,5 +65,11 @@ export class OrderComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  cancelOrder() { }
+  cancelOrder() {
+    // Implement logic to cancel the order...
+  }
+
+  payOrder() {
+    // Implement logic to initiate payment...
+  }
 }

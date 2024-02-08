@@ -1,19 +1,25 @@
 <p-toast></p-toast>
-<div>
+<div [formGroup]="checkoutForm">
     <h2>Summary</h2>
     <div style="margin: 0em;">
-        <form  [formGroup]="checkoutForm" style="flex-direction:column;">
-            <span class="p-float-label input-field-margin" style="margin-top: 2em;">
-                <input id="float-input" type="text" pInputText formControlName="address"> 
+        <div style="flex-direction:column;">
+            <span class="p-float-label">
+                <input id="float-input" type="text" pInputText formControlName="address">
                 <label for="float-input">Address</label>
             </span>
-            <span class="p-float-label input-field-margin" style="margin-top: 2em;">
+            <span class="p-float-label">
                 <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="comment"></textarea>
                 <label for="float-input">Comment</label>
             </span>
-        </form>
+        </div>
+        <p-dropdown class="p-float-label input-field-margin" [options]="paymentMethods" formControlName="paymentMethod"
+            placeholder="Select a Payment Method" optionLabel="label"></p-dropdown>
+
     </div>
     <h3>Total: {{total}}</h3>
-
-    <button pButton type="button" label="Checkout" [loading]="isSending" (click)="checkout()"></button>
+    <div *ngIf="checkoutForm.value.paymentMethod.value == 'paypal'">
+        <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+    </div>
+    <button *ngIf="checkoutForm.value.paymentMethod.value == 'caseondelivery'" pButton type="button" label="Checkout"
+        [loading]="isSending" (click)="checkout()"></button>
 </div>

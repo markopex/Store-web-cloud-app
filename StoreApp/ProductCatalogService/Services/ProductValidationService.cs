@@ -20,6 +20,11 @@ namespace ProductCatalogService.Services
             _tableClient.CreateIfNotExists();
         }
 
+        public Task<List<OrderDetail>> CancelReservationOnProducts(List<OrderDetail> orderDetailDtos)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> CheckIsBasketValid(BasketDto basket)
         {
             var productIds = basket.BasketItems.Select(x => x.ProductId).ToList();
@@ -65,6 +70,11 @@ namespace ProductCatalogService.Services
             }
 
             return products;
+        }
+
+        public Task<List<OrderDetail>> ReserveProducts(List<CreateOrderDetailDto> orderDetailDtos)
+        {
+            throw new NotImplementedException();
         }
     }
 }

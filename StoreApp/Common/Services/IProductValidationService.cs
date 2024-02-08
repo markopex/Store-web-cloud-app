@@ -13,6 +13,11 @@ namespace Common.Services
 
         [OperationContract]
         Task<List<Product>> GetProductsByIds(List<int> productIds);
+        [OperationContract]
+        Task<List<OrderDetail>> ReserveProducts(List<CreateOrderDetailDto> orderDetailDtos);
+
+        [OperationContract]
+        Task<List<OrderDetail>> CancelReservationOnProducts(List<OrderDetail> orderDetailDtos);
     }
 
 }

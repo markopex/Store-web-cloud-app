@@ -10,6 +10,7 @@ using System.Fabric;
 using Common.Services;
 using Microsoft.ServiceFabric.Services.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
+using Common.Dto.Order;
 
 namespace BasketService
 {
@@ -19,6 +20,7 @@ namespace BasketService
     internal sealed class BasketService : StatefulService, IBasketsService
     {
         private readonly string productValidatorServicePath = @"fabric:/StoreApp/ProductCatalogService";
+        private readonly string orderServicePath = @"fabric:/StoreApp/OrderService";
         private readonly IMapper _mapper = (new MapperConfiguration(mc =>
         {
             mc.AddProfile(new MappingProfile());
@@ -33,6 +35,11 @@ namespace BasketService
             {
                 return ServiceProxy.Create<IProductValidationService>(new Uri(productValidatorServicePath));
             }
+        }
+
+        private IOrderService? GetOrderService(string customerId)
+        {
+            return ServiceProxy.Create<IOrderService>(new Uri(orderServicePath), new ServicePartitionKey(customerId.GetHashCode()));
         }
 
         /// <summary>
@@ -78,6 +85,11 @@ namespace BasketService
                     BasketItems = new List<BasketItem> { }
                 });
                 var basketItem = basket.BasketItems.Find(i => i.ProductId == item.ProductId);
+                var updatedQuantity = new BasketItem()
+                {
+                    ProductId = dto.ProductId,
+                    Quantity = dto.Quantity,
+                };
                 if (basketItem == null)
                 {
                     basket.BasketItems.Add(item);
@@ -90,6 +102,7 @@ namespace BasketService
                 bool isBasketValid = await _productValidationService.CheckIsBasketValid(basketDto);
                 if (!isBasketValid)
                 {
+                    tx.Abort();
                     throw new InvalidOperationException();
                 }
                 await baskets.SetAsync(tx, customerId, basket);
@@ -117,6 +130,30 @@ namespace BasketService
                 await tx.CommitAsync();
 
                 return basket;
+            }
+        }
+
+        public async Task<OrderCreatedSuccessfullyDto> CheckoutAsync(string customerId, string address, string comment, string paymentMethod)
+        {
+            try
+            {
+                var basket = await GetBasketAsync(customerId);
+                var retVal = await GetOrderService(customerId).CreateOrder(customerId, new CreateOrderDto()
+                {
+                    OrderDetails = basket.BasketItems.Select(i => new CreateOrderDetailDto() {
+                        ProductId = i.ProductId,
+                        Quantity = i.Quantity,
+                    }).ToList(),
+                    Comment = comment,
+                    Address = address,
+                    PaymentMethod = paymentMethod,
+                });
+                // clear basket
+                await SetBasketAsync(customerId, new BasketDto() { BasketItems = new List<BasketItemDto>() });
+                return retVal;
+            } catch (Exception ex)
+            {
+                return null;
             }
         }
     }

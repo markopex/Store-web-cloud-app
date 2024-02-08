@@ -38,7 +38,7 @@ namespace ProductCatalogService.Services
 
             var productEntity = _mapper.Map<ProductEntity>(createProductDto);
             // Assign RowKey and PartitionKey
-            productEntity.PartitionKey = createProductDto.CategoryId.ToString();
+            productEntity.PartitionKey = "0";// createProductDto.CategoryId.ToString();
             productEntity.RowKey = Guid.NewGuid().ToString().GetHashCode().ToString();
 
             var imageUrl = await SavePostImageAsync(createProductDto.ImageFile, productEntity.RowKey);
@@ -73,6 +73,24 @@ namespace ProductCatalogService.Services
         {
             var query = _tableClient.Query<ProductEntity>().ToList();
             return _mapper.Map<List<Product>>(query);
+        }
+
+        public async Task<Stream> GetProductImageAsync(string productName)
+        {
+            var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_blobContainerName);
+
+            var blobClient = blobContainerClient.GetBlobClient(productName + ".png");
+
+            if (await blobClient.ExistsAsync())
+            {
+                var blobDownloadInfo = await blobClient.DownloadAsync();
+
+                return blobDownloadInfo.Value.Content;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

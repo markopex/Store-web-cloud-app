@@ -36,6 +36,22 @@ namespace ProductCatalogService.Controllers
             return Ok(_productService.GetProducts());
         }
 
+
+        [HttpGet("{id}/image")]
+        //[Authorize]
+        public async Task<IActionResult> GetProductImage(int id)
+        {
+            try
+            {
+                var fileStream = await _productService.GetProductImageAsync(id.ToString());
+                return File(fileStream, "image/png");
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm] CreateUpdateProductDto productDto)
         {

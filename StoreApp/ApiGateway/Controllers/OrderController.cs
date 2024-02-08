@@ -1,7 +1,9 @@
 ﻿using Common.Dto;
+using Common.Dto.Order;
 using Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Microsoft.ServiceFabric.Services.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using System.Net;
@@ -11,29 +13,29 @@ namespace ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BasketController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly string basketServicePath = @"fabric:/StoreApp/BasketService";
-        private IBasketsService? _basketService
+        private readonly string orderServicePath = @"fabric:/StoreApp/OrderService";
+        private IOrderService? _orderService
         {
             get
             {
                 var email = GetUserEmail();
-                return ServiceProxy.Create<IBasketsService>(new Uri(basketServicePath), new ServicePartitionKey(email.GetHashCode()));
+                return ServiceProxy.Create<IOrderService>(new Uri(orderServicePath), new ServicePartitionKey(email.GetHashCode()));
             }
         }
-        public BasketController()
+        public OrderController()
         {
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult> GetBasketAsync()
+        public async Task<IActionResult> GetOrdersAsync()
         {
             var email = GetUserEmail();
             try
             {
-                return Ok(await _basketService.GetBasketAsync(email));
+                return Ok(await _orderService.GetOrdersByUser(email));
             }
             catch (Exception ex)
             {
@@ -41,15 +43,29 @@ namespace ApiGateway.Controllers
             }
         }
 
-        [HttpPost]
+        // GET: api/Order/5
+        [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult> UpdateBasketAsync(BasketDto dto)
+        public async Task<IActionResult> GetOrderAsync(string id)
         {
             var email = GetUserEmail();
-            //IBasketsService? _basketService = ServiceProxy.Create<IBasketsService>(new Uri(basketServicePath), new ServicePartitionKey(email.GetHashCode()));
             try
             {
-                return Ok(await _basketService.SetBasketAsync(email, dto));
+                return Ok(await _orderService.GetOrder(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpPost("capture")]
+        public async Task<ActionResult> CaptureOrder([FromBody] CaptureOrderDto captureOrderDto)
+        {
+
+            try
+            {
+                await _orderService.CaptureOrder(captureOrderDto.OrderId);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -57,36 +73,20 @@ namespace ApiGateway.Controllers
             }
         }
 
-        [HttpPut]
-        [Authorize]
-        public async Task<ActionResult> AddBasketItemAsync(BasketItemDto item)
+        [HttpPost("cancel")]
+        public async Task<ActionResult> CancelOrder([FromBody] CancelOrderDto cancelOrderDto)
         {
-            var email = GetUserEmail();
+
             try
             {
-                return Ok(await _basketService.AddItemToBasketAsync(email, item));
+                await _orderService.CancelOrder(cancelOrderDto.OrderId);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
-
-        [HttpPost("checkout")]
-        [Authorize]
-        public async Task<ActionResult> Checkout(CheckoutDto dto)
-        {
-            var email = GetUserEmail();
-            try
-            {
-                return Ok(await _basketService.CheckoutAsync(email, dto.Address, dto.Comment, dto.PaymentMethod));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
 
         [NonAction]
         private string GetUserEmail()
