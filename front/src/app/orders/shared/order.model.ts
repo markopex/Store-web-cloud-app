@@ -12,6 +12,7 @@ export class Order {
     uTCTimeDeliveryStarted: number;
     utcTimeDeliveryExpected: number;
     paymentMethod: number;
+    paypalOrderId: string;
 }
 
 export class CaptureOrderDto {

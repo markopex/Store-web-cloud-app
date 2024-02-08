@@ -41,5 +41,8 @@
             (click)="cancelOrder()"></button>
         <button pButton type="button" label="Pay Order" icon="pi pi-check" class="p-button-success"
             (click)="payOrder()"></button>
+        <div *ngIf="resolve">
+            <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+        </div>
     </div>
 </div>
